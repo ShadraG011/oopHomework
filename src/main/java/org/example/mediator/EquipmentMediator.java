@@ -40,5 +40,4 @@ public class EquipmentMediator {
     public List<EquipmentModel> getAll() {
         return repository.findAll();
     }
-
 }

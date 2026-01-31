@@ -22,7 +22,11 @@ public class GreenhouseSystemDemo {
 
         EquipmentModel climatePrototype = mediator.createEquipmentModel("climateControl", "climateControl");
 
-        System.out.println("Создан прототип: " + climatePrototype.getName());
+        System.out.printf(
+            "Создан прототип модели: %S\nТипом оборудования: %s",
+            climatePrototype.getName(),
+            climatePrototype.getEquipmentType().getName()
+        );
 
         EquipmentModel tomatoClimate = climatePrototype.clone();
         tomatoClimate.setName("Климат-контроль для зоны томатов");
