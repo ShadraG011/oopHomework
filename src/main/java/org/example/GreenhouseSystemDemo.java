@@ -1,7 +1,9 @@
 package org.example;
 
 import org.example.equpmentObjects.EquipmentModel;
-import org.example.typeObjects.EquipmentType;
+import org.example.factory.EquipmentCreator;
+import org.example.mediator.EquipmentMediator;
+import org.example.repository.EquipmentRepository;
 import org.example.utils.OperationResult;
 import org.example.visitor.ClimateControlWorker;
 import org.example.visitor.ModelVisitor;
@@ -13,21 +15,20 @@ import java.util.*;
  */
 public class GreenhouseSystemDemo {
     public static void main(String[] args) {
-        System.out.println("🌱 Демонстрация системы управления оборудованием для теплиц с применением паттернов проектирования\n");
+        System.out.println("Демонстрация системы управления оборудованием для теплиц с применением паттернов проектирования\n");
+        EquipmentCreator creator = new EquipmentCreator();
+        EquipmentRepository repository = new EquipmentRepository();
+        EquipmentMediator mediator = new EquipmentMediator(creator, repository);
 
-        // 1. Создание заглушек для типов оборудования
-        EquipmentType climateType = EquipmentType.createClimateEquipmentType();
+        EquipmentModel climatePrototype = mediator.createEquipmentModel("climateControl", "climateControl");
 
-        // 2. Создание базовой конфигурации для климат-контроля (прототип)
-        EquipmentModel climatePrototype = EquipmentModel.createClimateControlPrototype(climateType);
-        System.out.println("✅ Создан прототип: " + climatePrototype.getName());
+        System.out.println("Создан прототип: " + climatePrototype.getName());
 
-        // 3. Клонирование прототипа для создания новой модели
         EquipmentModel tomatoClimate = climatePrototype.clone();
         tomatoClimate.setName("Климат-контроль для зоны томатов");
+        mediator.addEquipmentModel(tomatoClimate);
         System.out.println("\n🔧 Создана копия: " + tomatoClimate.getName());
 
-        // 4. Модификация копии с реальной настройкой параметров
         Map<String, Double> tomatoParams = new HashMap<>();
         tomatoParams.put("Целевая влажность", 65.0);
         tomatoParams.put("Скорость вентиляции", 200.0);
@@ -35,14 +36,12 @@ public class GreenhouseSystemDemo {
 
         EquipmentModel.configureModelParameters(tomatoClimate, "Климат-контроль", tomatoParams);
 
-        // 5. Выполнение операции
-        System.out.println("\n⚡ Запуск симуляции работы климат-контроля для томатов:\n");
+        System.out.println("\n Запуск симуляции работы климат-контроля для томатов:\n");
         ModelVisitor worker = new ClimateControlWorker();
         OperationResult result = tomatoClimate.executeOperation(worker);
         printSimulationResults(tomatoClimate, result);
 
-        // 6. Создание еще одной копии с другими параметрами
-        System.out.println("\n🔄 Создание копии для зоны клубники:\n");
+        System.out.println("\nСоздание копии для зоны клубники:\n");
         EquipmentModel strawberryClimate = climatePrototype.clone();
         strawberryClimate.setName("Климат-контроль для зоны клубники");
 
@@ -52,12 +51,12 @@ public class GreenhouseSystemDemo {
         strawberryParams.put("Целевая температура", 18.0);
 
         EquipmentModel.configureModelParameters(strawberryClimate, "Климат-контроль", strawberryParams);
-
+        mediator.addEquipmentModel(strawberryClimate);
         ModelVisitor strawberryWorker = new ClimateControlWorker();
         OperationResult strawberryResult = strawberryClimate.executeOperation(strawberryWorker);
         printSimulationResults(strawberryClimate, strawberryResult);
 
-        System.out.println("\n✅ Симуляция завершена успешно!");
+        System.out.println("\nСимуляция завершена успешно!");
     }
 
     private static void printSimulationResults(EquipmentModel model, OperationResult result) {
