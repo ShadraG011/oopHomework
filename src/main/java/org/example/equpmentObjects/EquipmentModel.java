@@ -87,33 +87,6 @@ public class EquipmentModel implements Prototype {
         this.equipmentType = equipmentType;
     }
 
-    public static EquipmentModel createClimateControlPrototype(EquipmentType type) {
-        // Создание композитной структуры для прототипа
-        CompositeModelFunction climateControl = new CompositeModelFunction("Климат-контроль");
-
-        // Параметр температуры
-        CompositeModelParameter tempParam = new CompositeModelParameter("Целевая температура");
-        tempParam.addValue(new LeafParameterValue(20.0, ""));
-
-        // Параметр влажности
-        CompositeModelParameter humidityParam = new CompositeModelParameter("Целевая влажность");
-        humidityParam.addValue(new LeafParameterValue(65.0, ""));
-
-        // Параметр вентиляции
-        CompositeModelParameter ventilationParam = new CompositeModelParameter("Скорость вентиляции");
-        ventilationParam.addValue(new LeafParameterValue(150.0, ""));
-
-        // Добавление параметров к функции
-        climateControl.addParameter(tempParam);
-        climateControl.addParameter(humidityParam);
-        climateControl.addParameter(ventilationParam);
-
-        // Создание модели
-        return new EquipmentModel(type, "Базовый климат-контроль",
-                Arrays.asList(climateControl));
-    }
-
-
     /**
      * Метод для настройки параметров модели с валидацией значений
      * @param model Модель оборудования для настройки
@@ -173,7 +146,7 @@ public class EquipmentModel implements Prototype {
             }
         }
 
-        System.out.println("✅ Параметры модели '" + model.getName() + "' успешно настроены:");
+        System.out.println("Параметры модели '" + model.getName() + "' успешно настроены:");
         parameterConfigurations.forEach(
             (param, val) -> System.out.println("   • " + param + ": " + val)
         );
